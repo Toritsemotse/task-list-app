@@ -1,0 +1,12 @@
+{
+    "user@example.com": {
+        "password": "password123",
+        "token": "jwt-abc-123",
+        "user": { "id": "u1", "name": "Example User" }
+    },
+    "admin@example.com": {
+        "password": "adminpass",
+        "token": "jwt-def-456",
+        "user": { "id": "u2", "name": "Admin User" }
+    }
+}

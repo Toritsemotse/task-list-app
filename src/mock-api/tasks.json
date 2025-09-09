@@ -1,0 +1,34 @@
+[
+    {
+        "id": "t1",
+        "title": "Buy groceries",
+        "status": "in_progress",
+        "assignee": "Alice",
+        "due_date": "2025-10-01",
+        "details": "Milk, Bread, Eggs, Butter"
+    },
+    {
+        "id": "t2",
+        "title": "Finish project report",
+        "status": "in_progress",
+        "assignee": "Bob",
+        "due_date": "2025-10-05",
+        "details": "Complete the final draft of the project report and send it to the team."
+    },
+    {
+        "id": "t3",
+        "title": "Plan team meeting",
+        "status": "completed",
+        "assignee": "Charlie",
+        "due_date": "2025-09-28",
+        "details": "Schedule a meeting to discuss project milestones and deadlines."
+    },
+    {
+        "id": "t4",
+        "title": "Update website content",
+        "status": "completed",
+        "assignee": "Diana",
+        "due_date": "2025-08-03",
+        "details": "Revise the homepage and about us sections with the latest information."
+    }
+]
