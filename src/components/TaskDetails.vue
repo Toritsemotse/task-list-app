@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { Task } from '../types'
 import { useApi } from '../composables/useApi'
 import { useTasksStore } from '../stores/tasks'
+import TaskEditModal from '../components/TaskEditModal.vue'
 
 interface Props {
   task: Task
@@ -14,6 +15,7 @@ const api = useApi()
 
 const isLoading = ref(false)
 const actionType = ref<'status' | 'delete' | null>(null)
+const showEditModal = ref(false)
 
 // Computed properties
 const markDoneButtonText = computed(() => {
@@ -44,11 +46,11 @@ const formatDate = (dateString: string): string => {
 const getStatusClasses = (status: string): string => {
   switch (status) {
     case 'completed':
-      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+      return 'bg-green-100 text-green-800'
     case 'in_progress':
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+      return 'bg-yellow-100 text-yellow-800'
     default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+      return 'bg-gray-100 text-gray-800'
   }
 }
 
@@ -71,7 +73,6 @@ const handleMarkDone = async () => {
     console.log('✅ Task status updated successfully')
   } catch (error: any) {
     console.error('❌ Failed to update task status:', error)
-    // You could emit an error event here to show a toast notification
   } finally {
     isLoading.value = false
     actionType.value = null
@@ -79,15 +80,23 @@ const handleMarkDone = async () => {
 }
 
 const handleEdit = () => {
-  console.log('📝 Edit task:', props.task.id)
-  // TODO: Implement edit modal - will be added in next phase
-  alert('Edit functionality will be implemented in the modal editor phase')
+  console.log('📝 Opening edit modal for task:', props.task.id)
+  showEditModal.value = true
+}
+
+const handleEditModalClose = () => {
+  console.log('📝 Closing edit modal')
+  showEditModal.value = false
+}
+
+const handleTaskUpdated = () => {
+  console.log('✅ Task updated via modal')
+  showEditModal.value = false
 }
 
 const handleDelete = async () => {
   if (isLoading.value) return
   
-  // Confirm deletion
   const confirmed = confirm(`Are you sure you want to delete "${props.task.title}"?`)
   if (!confirmed) return
   
@@ -99,7 +108,6 @@ const handleDelete = async () => {
     
     await api.deleteTask(props.task.id)
     
-    // Refresh tasks to remove deleted task from UI
     await tasksStore.fetchTasks()
     
     console.log('✅ Task deleted successfully')
@@ -113,77 +121,87 @@ const handleDelete = async () => {
 }
 </script>
 
-
 <template>
-  <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-    <div class="space-y-4">
-      <!-- Task Description -->
-      <div>
-        <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description:</h4>
-        <p class="text-sm text-gray-600 dark:text-gray-400">{{ task.details }}</p>
+  <!-- Expanded Details Section -->
+  <div class="border-t bg-gray-50 dark:bg-gray-700/50 p-6">
+    <!-- Details -->
+    <div class="mb-6">
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center">
+          <span class="text-white text-xs font-bold">i</span>
+        </div>
+        <h4 class="text-lg font-semibold text-slate-800">Task Details</h4>
       </div>
       
+      <div class="bg-white rounded-lg p-4 border mb-4">
+        <p class="text-slate-700 leading-relaxed">{{ task.details }}</p>
+      </div>
+
       <!-- Task Metadata -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-        <div>
-          <span class="font-medium text-gray-700 dark:text-gray-300">Assignee:</span>
-          <span class="ml-2 text-gray-600 dark:text-gray-400">{{ task.assignee }}</span>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white rounded-lg p-3 border">
+          <span class="font-semibold text-slate-700 text-sm">Assignee:</span>
+          <span class="ml-2 text-slate-600 text-sm">{{ task.assignee }}</span>
         </div>
-        <div>
-          <span class="font-medium text-gray-700 dark:text-gray-300">Due Date:</span>
-          <span class="ml-2 text-gray-600 dark:text-gray-400">{{ formatDate(task.due_date) }}</span>
+        <div class="bg-white rounded-lg p-3 border">
+          <span class="font-semibold text-slate-700 text-sm">Due Date:</span>
+          <span class="ml-2 text-slate-600 text-sm">{{ formatDate(task.due_date) }}</span>
         </div>
-        <div>
-          <span class="font-medium text-gray-700 dark:text-gray-300">Status:</span>
+        <div class="bg-white rounded-lg p-3 border">
+          <span class="font-semibold text-slate-700 text-sm">Status:</span>
           <span 
-            class="ml-2 px-2 py-1 rounded-full text-xs font-medium"
+            class="ml-2 px-2 py-1 rounded-full text-xs font-semibold"
             :class="getStatusClasses(task.status)"
           >
             {{ task.status.replace('_', ' ').toUpperCase() }}
           </span>
         </div>
       </div>
-      
-      <!-- Action Buttons -->
-      <div class="flex space-x-3 pt-2">
-        <button
-          @click="handleMarkDone"
-          :disabled="isLoading"
-          :class="markDoneButtonClasses"
-          class="px-4 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <span v-if="isLoading && actionType === 'status'" class="mr-2">
-            <svg class="animate-spin h-4 w-4 inline" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          </span>
-          {{ markDoneButtonText }}
-        </button>
-        
-        <button
-          @click="handleEdit"
-          :disabled="isLoading"
-          class="px-4 py-2 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          Edit
-        </button>
-        
-        <button
-          @click="handleDelete"
-          :disabled="isLoading"
-          class="px-4 py-2 text-sm font-medium text-red-700 bg-red-100 hover:bg-red-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          <span v-if="isLoading && actionType === 'delete'" class="mr-2">
-            <svg class="animate-spin h-4 w-4 inline" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-          </span>
-          {{ isLoading && actionType === 'delete' ? 'Deleting...' : 'Delete' }}
-        </button>
-      </div>
     </div>
+    
+    <!-- Action Buttons -->
+    <div class="flex space-x-3">
+      <button
+        @click="handleMarkDone"
+        :disabled="isLoading"
+        :class="markDoneButtonClasses"
+        class="flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      >
+        <span v-if="isLoading && actionType === 'status'">
+          <div class="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full"></div>
+        </span>
+        <span v-else>✓</span>
+        {{ markDoneButtonText }}
+      </button>
+      
+      <button
+        @click="handleEdit"
+        :disabled="isLoading"
+        class="flex items-center space-x-2 px-4 py-2 text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      >
+        <span>✎</span>
+        Edit
+      </button>
+      
+      <button
+        @click="handleDelete"
+        :disabled="isLoading"
+        class="flex items-center space-x-2 px-4 py-2 text-red-700 bg-red-100 hover:bg-red-200 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+      >
+        <span v-if="isLoading && actionType === 'delete'">
+          <div class="animate-spin h-3 w-3 border-2 border-current border-t-transparent rounded-full"></div>
+        </span>
+        <span v-else>×</span>
+        {{ isLoading && actionType === 'delete' ? 'Deleting...' : 'Delete' }}
+      </button>
+    </div>
+    
+    <!-- Edit Modal -->
+    <TaskEditModal
+      :task="task"
+      :is-open="showEditModal"
+      @close="handleEditModalClose"
+      @updated="handleTaskUpdated"
+    />
   </div>
 </template>
-

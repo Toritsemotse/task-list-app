@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { Task } from '../types'
+import TaskDetails from './TaskDetails.vue'
 
-// Props - data passed from parent component
 interface Props {
   task: Task
 }
@@ -16,7 +16,7 @@ const toggleExpanded = () => {
   isExpanded.value = !isExpanded.value
 }
 
-// Move functions inside script setup (this was the main issue)
+// Helper functions
 const getStatusColor = (status: string) => {
   return status === 'completed' 
     ? 'bg-green-100 text-green-800' 
@@ -33,81 +33,62 @@ const formatDate = (dateString: string) => {
 </script>
 
 <template>
-  <div class="bg-white border rounded-lg shadow-sm mb-4">
+  <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
     <!-- Main Task Row - Clickable -->
     <div 
       @click="toggleExpanded"
-      class="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+      class="p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
     >
       <div class="flex items-center justify-between">
-        <div class="flex-1 grid grid-cols-4 gap-4">
+        <div class="flex-1 grid grid-cols-4 gap-6">
           <!-- Title -->
-          <div>
-            <h3 class="font-medium text-gray-900">{{ task.title }}</h3>
+          <div class="flex items-center space-x-3">
+            <div class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></div>
+            <h3 class="font-semibold text-slate-800 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              {{ task.title }}
+            </h3>
           </div>
           
           <!-- Status -->
-          <div>
+          <div class="flex items-center space-x-2">
             <span 
-              class="px-2 py-1 rounded-full text-xs font-medium"
+              class="px-3 py-1 rounded-full text-xs font-semibold"
               :class="getStatusColor(task.status)"
             >
               {{ task.status.replace('_', ' ').toUpperCase() }}
             </span>
+            <span v-if="task.status === 'completed'" class="text-green-500 text-sm">✓</span>
           </div>
           
           <!-- Assignee -->
-          <div class="text-gray-600">
-            {{ task.assignee }}
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+              <span class="text-white text-sm font-semibold">{{ task.assignee.charAt(0) }}</span>
+            </div>
+            <span class="text-slate-700 dark:text-slate-300 font-medium">{{ task.assignee }}</span>
           </div>
           
           <!-- Due Date -->
-          <div class="text-gray-600">
-            {{ formatDate(task.due_date) }}
+          <div class="flex items-center space-x-2">
+            <span class="text-slate-700 dark:text-slate-300 font-medium">{{ formatDate(task.due_date) }}</span>
           </div>
         </div>
         
-        <!-- Expand/Collapse Icon -->
+        <!-- Expand/Collapse Button -->
         <div class="ml-4">
-          <svg 
-            class="w-5 h-5 text-gray-400 transition-transform duration-200"
-            :class="{ 'rotate-180': isExpanded }"
-            fill="none" 
-            stroke="currentColor" 
-            viewBox="0 0 24 24"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
+          <div class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors">
+            <span 
+              class="text-gray-500 transition-transform duration-200"
+              :class="{ 'rotate-180': isExpanded }"
+            >
+              ⌄
+            </span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- Expanded Details Section -->
-    <div v-if="isExpanded" class="border-t bg-gray-50 p-4">
-      <!-- Full Details -->
-      <div class="mb-4">
-        <h4 class="font-medium text-gray-900 mb-2">Details</h4>
-        <p class="text-gray-700">{{ task.details }}</p>
-      </div>
-      
-      <!-- Action Buttons (UI only as per PDF) -->
-      <div class="flex space-x-3">
-        <button 
-          class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-        >
-          Mark Done
-        </button>
-        <button 
-          class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-        >
-          Edit
-        </button>
-        <button 
-          class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
+    <!-- TaskDetails Component for Expanded Section -->
+    <TaskDetails v-if="isExpanded" :task="task" />
   </div>
 </template>

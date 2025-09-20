@@ -1,5 +1,4 @@
-// import './assets/main.css'
-
+// Update your main.ts:
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
@@ -13,6 +12,7 @@ app.use(router)
 
 app.mount('#app')
 
+// Move this AFTER the app setup
 import { useAuthStore } from './stores/auth'    
 const authStore = useAuthStore()
 authStore.initAuth()

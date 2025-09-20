@@ -7,7 +7,7 @@ export interface User {
 export interface Task {
     id: string;
     title: string;
-    status: 'in-progress' | 'completed';
+    status: 'in_progress' | 'completed';
     assignee: string;
     due_date: string; 
     details: string;
