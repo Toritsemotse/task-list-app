@@ -102,7 +102,7 @@ const togglePasswordVisibility = () => {
               </svg>
               Signing in...
             </span>
-            <span v-else>Log In</span>
+            <span v-else>Sign in</span>
           </button>
 
         </form>
