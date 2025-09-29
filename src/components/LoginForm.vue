@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuthStore } from '../stores/auth'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
-const email = ref('user@example.com') // Pre-fill for demo
-const password = ref('password123')   // Pre-fill for demo
+const email = ref('')
+const password = ref('')
 const error = ref('')
 const isLoading = ref(false)
 const showPassword = ref(false)
@@ -19,17 +19,13 @@ const handleSubmit = async () => {
   error.value = ''
   
   try {
-    console.log('🚀 Attempting login...')
-    const response = await authStore.login({
+    await authStore.login({
       email: email.value,
       password: password.value
     })
     
-    console.log('✅ Login successful, redirecting to dashboard')
     await router.push('/dashboard')
-    
   } catch (err: any) {
-    console.error('❌ Login failed:', err)
     error.value = err.message || 'Login failed. Please try again.'
   } finally {
     isLoading.value = false
@@ -42,93 +38,123 @@ const togglePasswordVisibility = () => {
 </script>
 
 <template>
-  <div class="w-full space-y-8">
-    <!-- Header -->
-    <div class="text-center">
-      <h2 class="text-3xl font-bold text-slate-800 mb-2">
-        Welcome Back
-      </h2>
-      <p class="text-slate-600 font-medium">
-        Sign in to access your dashboard
-      </p>
-    </div>
-
-    <!-- Login Form -->
-    <form class="space-y-6" @submit.prevent="handleSubmit">
-      <!-- Email Field -->
-      <div class="space-y-2">
-        <label for="email" class="block text-sm font-semibold text-slate-700">
-          Email Address
-        </label>
-        <input
-          id="email"
-          v-model="email"
-          name="email"
-          type="email"
-          autocomplete="email"
-          required
-          :disabled="isLoading"
-          class="block w-full px-6 py-4 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
-          placeholder="Enter your email"
-        >
-      </div>
-
-      <!-- Password Field -->
-      <div class="space-y-2">
-        <label for="password" class="block text-sm font-semibold text-slate-700">
-          Password
-        </label>
-        <div class="relative">
-          <input
-            id="password"
-            v-model="password"
-            name="password"
-            :type="showPassword ? 'text' : 'password'"
-            autocomplete="current-password"
-            required
-            :disabled="isLoading"
-            class="block w-full px-6 py-4 pr-12 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
-            placeholder="Enter your password"
-          >
-          <button
-            type="button"
-            @click="togglePasswordVisibility"
-            class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
-            :disabled="isLoading"
-          >
-            <span class="text-sm font-medium">{{ showPassword ? 'Hide' : 'Show' }}</span>
-          </button>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-4">
+    <div class="w-80 h-[600px] md:w-96 md:h-[650px] lg:w-[420px] lg:h-[700px] relative">
+      <!-- Background Glass Effect -->
+      <div class="w-full h-full absolute inset-0 bg-gradient-to-bl from-teal-300/30 to-white/0 rounded-[10px] backdrop-blur-[2px] border border-white/20 shadow-xl" ></div>
+      
+      <!-- Content Container -->
+      <div class="relative z-10 flex flex-col items-center justify-center h-full p-8">
+        <!-- Header -->
+        <div class="text-center mb-12 md:mb-16">
+          <h1 class="text-white text-lg md:text-xl lg:text-2xl font-normal font-roboto tracking-[3.96px] mb-2">
+            LOG IN
+          </h1>
+          <div class="w-16 h-px bg-white/30 mx-auto"></div>
         </div>
-      </div>
 
-      <!-- Error Message -->
-      <div v-if="error" class="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-2xl p-4">
-        <div class="flex items-center space-x-3">
-          <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center">
-            <span class="text-red-500 text-xs font-bold">!</span>
+        <!-- Login Form -->
+        <form @submit.prevent="handleSubmit" class="w-full max-w-xs space-y-6">
+          <!-- Username/Email Field -->
+          <div class="space-y-2">
+            <label for="email" class="block text-zinc-500 text-xs font-normal font-roboto">
+              Username
+            </label>
+            <input
+              id="email"
+              v-model="email"
+              type="email"
+              required
+              :disabled="isLoading"
+              class="w-full h-8 md:h-10 bg-white/90 backdrop-blur-sm rounded-md px-3 text-sm text-gray-800 placeholder-gray-400 border border-white/30 focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition-all disabled:opacity-50"
+              placeholder="Enter your email"
+            />
           </div>
-          <p class="text-red-700 font-medium">{{ error }}</p>
-        </div>
+
+          <!-- Password Field -->
+          <div class="space-y-2">
+            <label for="password" class="block text-zinc-500 text-xs font-normal font-roboto">
+              Password
+            </label>
+            <div class="relative">
+              <input
+                id="password"
+                v-model="password"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                :disabled="isLoading"
+                class="w-full h-8 md:h-10 bg-white/90 backdrop-blur-sm rounded-md px-3 pr-10 text-sm text-gray-800 placeholder-gray-400 border border-white/30 focus:outline-none focus:ring-2 focus:ring-teal-300 focus:border-transparent transition-all disabled:opacity-50"
+                placeholder="Enter your password"
+              />
+              <button
+                type="button"
+                @click="togglePasswordVisibility"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                :disabled="isLoading"
+              >
+                <span class="text-gray-400 text-xs">{{ showPassword ? 'Hide' : 'Show' }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <div v-if="error" class="bg-red-500/20 backdrop-blur-sm border border-red-300/30 rounded-md p-3">
+            <p class="text-red-100 text-xs font-medium text-center">{{ error }}</p>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            :disabled="isLoading"
+            class="w-full h-10 md:h-12 bg-gradient-to-r from-teal-400 to-cyan-400 hover:from-teal-500 hover:to-cyan-500 text-white font-medium rounded-md transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
+          >
+            <span v-if="isLoading" class="inline-flex items-center">
+              <svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Signing in...
+            </span>
+            <span v-else>Log In</span>
+          </button>
+
+          <!-- Forgot Password -->
+          <!-- <div class="text-center pt-4">
+            <button
+              type="button"
+              class="text-zinc-400 hover:text-white text-xs font-light font-roboto transition-colors duration-300"
+            >
+              Forgot your password?
+            </button>
+          </div> -->
+        </form>
       </div>
-
-      <!-- Submit Button -->
-      <div class="pt-2">
-        <button
-          type="submit"
-          :disabled="isLoading"
-          class="group relative w-full flex justify-center items-center py-4 px-6 border border-transparent text-lg font-bold rounded-2xl text-white bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl"
-        >
-          <span v-if="isLoading" class="absolute left-0 inset-y-0 flex items-center pl-6">
-            <div class="animate-spin h-6 w-6 border-2 border-white/30 border-t-white rounded-full"></div>
-          </span>
-          
-          {{ isLoading ? 'Signing In...' : 'Sign In to Dashboard' }}
-          
-          <span v-if="!isLoading" class="ml-3 group-hover:translate-x-1 transition-transform duration-300">→</span>
-        </button>
-      </div>
-
-
-    </form>
+    </div>
   </div>
 </template>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+.font-roboto {
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Enhanced glass morphism effect */
+.backdrop-blur-\[2px\] {
+  backdrop-filter: blur(2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .tracking-\[3\.96px\] {
+    letter-spacing: 2px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .tracking-\[3\.96px\] {
+    letter-spacing: 4.5px;
+  }
+}
+</style>

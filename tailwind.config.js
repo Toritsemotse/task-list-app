@@ -4,9 +4,10 @@ export default {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
-  darkMode: 'class', // This line is crucial
+  darkMode: 'class', 
   theme: {
     extend: {},
   },
   plugins: [],
 }
+

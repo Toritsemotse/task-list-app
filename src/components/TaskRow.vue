@@ -34,13 +34,16 @@ const formatDate = (dateString: string) => {
 
 <template>
   <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+
     <!-- Main Task Row - Clickable -->
+
     <div 
       @click="toggleExpanded"
       class="p-6 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
     >
       <div class="flex items-center justify-between">
         <div class="flex-1 grid grid-cols-4 gap-6">
+
           <!-- Title -->
           <div class="flex items-center space-x-3">
             <div class="w-2 h-2 rounded-full bg-blue-500 flex-shrink-0"></div>
@@ -62,9 +65,6 @@ const formatDate = (dateString: string) => {
           
           <!-- Assignee -->
           <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-              <span class="text-white text-sm font-semibold">{{ task.assignee.charAt(0) }}</span>
-            </div>
             <span class="text-slate-700 dark:text-slate-300 font-medium">{{ task.assignee }}</span>
           </div>
           
@@ -76,13 +76,15 @@ const formatDate = (dateString: string) => {
         
         <!-- Expand/Collapse Button -->
         <div class="ml-4">
-          <div class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors">
-            <span 
-              class="text-gray-500 transition-transform duration-200"
-              :class="{ 'rotate-180': isExpanded }"
-            >
-              ⌄
-            </span>
+          <div 
+            class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"            
+          >
+              <span 
+                class="text-gray-500 transition-transform duration-200"
+                :class="{ 'rotate-180': isExpanded }"
+              >
+                ⌄
+              </span>
           </div>
         </div>
       </div>

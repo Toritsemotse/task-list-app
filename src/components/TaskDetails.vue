@@ -127,9 +127,6 @@ const handleDelete = async () => {
     <!-- Details -->
     <div class="mb-6">
       <div class="flex items-center space-x-3 mb-4">
-        <div class="w-6 h-6 bg-blue-500 rounded flex items-center justify-center">
-          <span class="text-white text-xs font-bold">i</span>
-        </div>
         <h4 class="text-lg font-semibold text-slate-800">Task Details</h4>
       </div>
       

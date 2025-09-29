@@ -1,3 +1,4 @@
+// for displaying user information
 export interface User {
     id: string;
     name: string;
@@ -13,6 +14,7 @@ export interface Task {
     details: string;
 }
 
+//for handling auth requests
 export interface LoginRequest {
     email: string;
     password: string;
