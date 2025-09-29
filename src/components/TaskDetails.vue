@@ -63,16 +63,16 @@ const handleMarkDone = async () => {
   
   try {
     const newStatus = props.task.status === 'completed' ? 'in_progress' : 'completed'
-    console.log(`🔄 Updating task ${props.task.id} status to:`, newStatus)
+    
     
     await api.updateTaskStatus(props.task.id, newStatus)
     
     // Refresh tasks to get updated data
     await tasksStore.fetchTasks()
     
-    console.log('✅ Task status updated successfully')
+   
   } catch (error: any) {
-    console.error('❌ Failed to update task status:', error)
+    
   } finally {
     isLoading.value = false
     actionType.value = null
@@ -80,17 +80,17 @@ const handleMarkDone = async () => {
 }
 
 const handleEdit = () => {
-  console.log('📝 Opening edit modal for task:', props.task.id)
+  
   showEditModal.value = true
 }
 
 const handleEditModalClose = () => {
-  console.log('📝 Closing edit modal')
+  
   showEditModal.value = false
 }
 
 const handleTaskUpdated = () => {
-  console.log('✅ Task updated via modal')
+  
   showEditModal.value = false
 }
 
@@ -104,15 +104,15 @@ const handleDelete = async () => {
   actionType.value = 'delete'
   
   try {
-    console.log('🗑️ Deleting task:', props.task.id)
+    
     
     await api.deleteTask(props.task.id)
     
     await tasksStore.fetchTasks()
     
-    console.log('✅ Task deleted successfully')
+    
   } catch (error: any) {
-    console.error('❌ Failed to delete task:', error)
+    
     alert('Failed to delete task. Please try again.')
   } finally {
     isLoading.value = false

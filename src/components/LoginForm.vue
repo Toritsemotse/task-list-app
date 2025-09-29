@@ -118,15 +118,6 @@ const togglePasswordVisibility = () => {
             <span v-else>Log In</span>
           </button>
 
-          <!-- Forgot Password -->
-          <!-- <div class="text-center pt-4">
-            <button
-              type="button"
-              class="text-zinc-400 hover:text-white text-xs font-light font-roboto transition-colors duration-300"
-            >
-              Forgot your password?
-            </button>
-          </div> -->
         </form>
       </div>
     </div>

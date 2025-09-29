@@ -75,7 +75,7 @@ const handleSubmit = async () => {
     emit('updated')
     emit('close')
   } catch (err: any) {
-    console.error('Failed to update task:', err)
+    
     error.value = err.message || 'Failed to update task. Please try again.'
   } finally {
     isLoading.value = false
