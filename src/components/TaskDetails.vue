@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import type { Task } from '../types'
 import { useApi } from '../composables/useApi'
 import { useTasksStore } from '../stores/tasks'
-import TaskEditModal from '../components/TaskEditModal.vue'
+import TaskEditModal from './TaskEditModal.vue'
 
 interface Props {
   task: Task
