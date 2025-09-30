@@ -11,6 +11,13 @@ const authStore = useAuthStore()
 // Dark mode state
 const isDarkMode = ref(false)
 
+
+const isMobileMenuOpen = ref(false)
+
+
+
+
+
 // Dark mode toggle function
 const toggleDarkMode = () => {
   isDarkMode.value = !isDarkMode.value
@@ -151,47 +158,91 @@ const searchQuery = computed({
   <div
     class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-blue-900 dark:to-indigo-900 transition-colors duration-300">
     <!-- Header -->
-    <header
-      class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg border-b border-white/20 dark:border-gray-700/20 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-6 py-4">
-        <div class="flex justify-between items-center">
-          <!-- Brand Section -->
-          <div class="flex items-center space-x-4">
-
-            <div>
-              <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-200">Task Dashboard</h1>
-              <p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Project Management Hub</p>
-            </div>
-          </div>
-
-          <!-- User Section -->
-          <div class="flex items-center space-x-4">
-            <!-- Dark Mode Toggle -->
-            <button @click="toggleDarkMode"
-              class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
-              title="Toggle dark mode">
-              <span v-if="isDarkMode" class="text-yellow-400 text-lg">☀️</span>
-              <span v-else class="text-gray-600 text-lg">🌙</span>
-            </button>
-
-            <!-- User Profile -->
-            <div
-              class="flex items-center space-x-3 px-4 py-2 bg-white/60 dark:bg-gray-700/60 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
-
-              <div>
-                <p class="text-slate-500 dark:text-slate-400 text-xs">Project Manager</p>
-              </div>
-            </div>
-
-            <!-- Logout Button -->
-            <button @click="handleLogout"
-              class="px-4 py-2 bg-slate-600 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-800 text-white rounded-xl font-medium transition-colors shadow-sm text-sm">
-              Logout
-            </button>
+     <header
+    class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg border-b border-white/20 dark:border-gray-700/20 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 max-sm:px-4 max-sm:py-3">
+      <div class="flex justify-between items-center">
+        <!-- Brand Section -->
+        <div class="flex items-center space-x-4">
+          <div>
+            <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-200 max-sm:text-xl">Task Dashboard</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm font-medium max-sm:text-xs">Project Management Hub</p>
           </div>
         </div>
+
+        <!-- Desktop User Section -->
+        <div class="flex items-center space-x-4 max-sm:hidden">
+          <!-- Dark Mode Toggle -->
+          <button @click="toggleDarkMode"
+            class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+            title="Toggle dark mode">
+            <span v-if="isDarkMode" class="text-yellow-400 text-lg">☀️</span>
+            <span v-else class="text-gray-600 text-lg">🌙</span>
+          </button>
+
+          <!-- User Profile -->
+          <div
+            class="flex items-center space-x-3 px-4 py-2 bg-white/60 dark:bg-gray-700/60 rounded-xl border border-gray-200 dark:border-gray-600 shadow-sm">
+            <div>
+              <p class="text-slate-500 dark:text-slate-400 text-xs">Project Manager</p>
+            </div>
+          </div>
+
+          <!-- Logout Button -->
+          <button @click="handleLogout"
+            class="px-4 py-2 bg-slate-600 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-800 text-white rounded-xl font-medium transition-colors shadow-sm text-sm">
+            Logout
+          </button>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <div class="hidden max-sm:flex max-sm:items-center">
+          <button 
+            @click="isMobileMenuOpen = !isMobileMenuOpen"
+            class="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors"
+          >
+            <span class="text-gray-600 dark:text-gray-300 text-lg">☰</span>
+          </button>
+        </div>
       </div>
-    </header>
+
+      <!-- Mobile Menu Dropdown -->
+      <div 
+        v-if="isMobileMenuOpen"
+        class="max-sm:absolute max-sm:top-full max-sm:left-0 max-sm:right-0 max-sm:bg-white/95 max-sm:dark:bg-gray-900/95 max-sm:backdrop-blur-md max-sm:border-t max-sm:border-gray-200 max-sm:dark:border-gray-700 max-sm:shadow-lg max-sm:py-3 max-sm:px-4"
+      >
+        <div class="max-sm:flex max-sm:flex-col max-sm:space-y-3">
+          <!-- Dark Mode Toggle in Mobile Menu -->
+          <button 
+            @click="toggleDarkMode"
+            class="max-sm:flex max-sm:items-center max-sm:space-x-3 max-sm:p-3 max-sm:rounded-lg max-sm:bg-gray-50 max-sm:dark:bg-gray-800 max-sm:hover:bg-gray-100 max-sm:dark:hover:bg-gray-700 max-sm:transition-colors"
+          >
+            <span v-if="isDarkMode" class="text-yellow-400 text-lg">☀️</span>
+            <span v-else class="text-gray-600 text-lg">🌙</span>
+            <span class="text-slate-700 dark:text-slate-300 font-medium">
+              {{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}
+            </span>
+          </button>
+
+          <!-- User Profile in Mobile Menu -->
+          <div class="max-sm:flex max-sm:items-center max-sm:space-x-3 max-sm:p-3 max-sm:rounded-lg max-sm:bg-gray-50 max-sm:dark:bg-gray-800">
+            <div>
+              <p class="text-slate-500 dark:text-slate-400 text-xs">Logged in as</p>
+              <p class="text-slate-700 dark:text-slate-300 font-medium">Project Manager</p>
+            </div>
+          </div>
+
+          <!-- Logout Button in Mobile Menu -->
+          <button 
+            @click="handleLogout"
+            class="max-sm:w-full max-sm:px-4 max-sm:py-3 max-sm:bg-slate-600 max-sm:hover:bg-slate-700 max-sm:dark:bg-slate-700 max-sm:dark:hover:bg-slate-800 max-sm:text-white max-sm:rounded-xl max-sm:font-medium max-sm:transition-colors max-sm:shadow-sm"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
 
     <div class="max-w-7xl mx-auto px-6 py-3"></div>
 
@@ -297,38 +348,29 @@ const searchQuery = computed({
           class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
           <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">Search & Filter Tasks</h3>
 
-          <!-- Search Box (if available) -->
-          <!-- <div v-if="tasksStore.setSearchQuery" class="mb-4">
-            <input
-              :value="tasksStore.searchQuery || ''"
-              @input="tasksStore.setSearchQuery($event.target.value)"
-              type="text"
-              placeholder="Search tasks..."
-              class="w-full px-4 py-3 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-            />
-          </div> -->
+          
 
           <input v-model="searchQuery" type="text" placeholder="Search tasks..."
             class="w-full px-4 py-3 mb-4 border border-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm" />
 
           <!-- Filter Buttons (if available) -->
-          <div v-if="tasksStore.setStatusFilter" class="flex space-x-2">
-            <button @click="tasksStore.setStatusFilter('all')"
-              :class="(tasksStore.statusFilter === 'all' || !tasksStore.statusFilter) ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
-              class="px-4 py-2 rounded-lg font-medium transition-colors text-sm">
-              All Tasks
-            </button>
-            <button @click="tasksStore.setStatusFilter('in_progress')"
-              :class="tasksStore.statusFilter === 'in_progress' ? 'bg-yellow-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
-              class="px-4 py-2 rounded-lg font-medium transition-colors text-sm">
-              In Progress
-            </button>
-            <button @click="tasksStore.setStatusFilter('completed')"
-              :class="tasksStore.statusFilter === 'completed' ? 'bg-green-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
-              class="px-4 py-2 rounded-lg font-medium transition-colors text-sm">
-              Completed
-            </button>
-          </div>
+          <div v-if="tasksStore.setStatusFilter" class="flex space-x-2 max-sm:flex-col max-sm:space-x-0 max-sm:space-y-2 max-sm:w-full">
+  <button @click="tasksStore.setStatusFilter('all')"
+    :class="(tasksStore.statusFilter === 'all' || !tasksStore.statusFilter) ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
+    class="px-4 py-2 rounded-lg font-medium transition-colors text-sm max-sm:w-full max-sm:py-3 max-sm:text-base">
+    All Tasks
+  </button>
+  <button @click="tasksStore.setStatusFilter('in_progress')"
+    :class="tasksStore.statusFilter === 'in_progress' ? 'bg-yellow-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
+    class="px-4 py-2 rounded-lg font-medium transition-colors text-sm max-sm:w-full max-sm:py-3 max-sm:text-base">
+    In Progress
+  </button>
+  <button @click="tasksStore.setStatusFilter('completed')"
+    :class="tasksStore.statusFilter === 'completed' ? 'bg-green-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'"
+    class="px-4 py-2 rounded-lg font-medium transition-colors text-sm max-sm:w-full max-sm:py-3 max-sm:text-base">
+    Completed
+  </button>
+</div>
         </div>
 
 
